@@ -1,5 +1,5 @@
 var stream = require("JSONStream"),
-  tilePixel = require("./aggregation/"),
+  tilePixel = require("tile-pixel"),
   es = require('event-stream'),
   fs = require('fs'),
   async = require('async'),
