@@ -12,35 +12,37 @@ var argv = require('optimist')
   .default('t', null)
   .argv
 
-var levels = argv.l.split(',');
+var levels = argv.l.split(',')
 
 var agg = {},
   maxTime, minTime
 
 var q = async.queue(function (t, cb) {
   mkdirp(t.path, function (err) {
-    var pxData = []
+    var pxData = {}
+
     for (var px in t.tile) {
       var xy = px.split('-')
-      var times = [];
-      var values = [];
+      var times = []
+      var values = []
+
       for (var time in t.tile[px].values){
         var date = new Date(time)
         if (date.getTime() < minTime || !minTime){
-          minTime = date;
+          minTime = date
         }
         if (date.getTime() > maxTime || !maxTime){
-          maxTime = date;
+          maxTime = date
         }
-        times.push(date)
-        values.push(t.tile[px].values[time])
+        if (!pxData[date]){
+          pxData[date] = []
+        }
+        pxData[date].push({
+          x: xy[0],
+          y: xy[1],
+          v: t.tile[px].values[time]
+        })
       }
-      pxData.push({
-        x: xy[0],
-        y: xy[1],
-        t: times,
-        v: values 
-      })
     }
     fs.writeFileSync(t.path+'/'+t.file, JSON.stringify(pxData))
     cb()
@@ -48,7 +50,8 @@ var q = async.queue(function (t, cb) {
 },4)
 
 q.drain = function(){
-  console.log('DONE', minTime, maxTime);
+  console.log('Min Time:', minTime)
+  console.log('Max Time:', maxTime);
 }
 
 var parser = stream.parse('features.*');
