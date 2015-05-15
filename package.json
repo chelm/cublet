@@ -1,19 +1,41 @@
 {
   "name": "cublet",
   "version": "1.0.0",
-  "description": "",
+  "description": "A tile cube generator for geojson and csv data",
   "main": "index.js",
-  "scripts": {
-    "test": ""
+  "bin": {
+    "cublet": "csv-cubes.js"
   },
-  "author": "Chris Helm",
-  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
   "dependencies": {
     "JSONStream": "^0.10.0",
     "async": "^0.9.0",
     "event-stream": "^3.3.0",
     "mkdirp": "^0.5.0",
     "optimist": "^0.6.1",
-    "tile-pixel": "^1.0.0"
-  }
+    "tile-pixel": "^1.0.0",
+    "csv": "^0.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "starnard && node test | tap-spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chelm/cublet.git"
+  },
+  "keywords": [
+    "tile",
+    "cubes",
+    "geojson",
+    "csv"
+  ],
+  "author": "Chris Helm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chelm/cublet/issues"
+  },
+  "homepage": "https://github.com/chelm/cublet"
 }
