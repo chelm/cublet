@@ -20,7 +20,7 @@ module.exports = function (options) {
     var specFile = options.out+'/spec.json'
     fs.exists(specFile, function (exists) {
       if (exists) {
-        var spec = JSON.parse(fs.readFileSync(specFile).toString());
+        var spec = JSON.parse(fs.readFileSync(specFile).toString())
         maxTime = spec.maxTime
         minTime = spec.minTime
       }
@@ -86,9 +86,26 @@ module.exports = function (options) {
               t: times,
               v: values
             })
+          } else if (options.format === 'aggregate') {
+            // flatten the pxData arrays into count per attr
+            var counts = {}, total = 0
+            times.forEach(function (t, i) {
+              if (!counts[values[i]]) {
+                counts[values[i]] = 0
+              } 
+              counts[values[i]]++
+              total++
+            })
+            pxData.push({
+              x: xy[0],
+              y: xy[1],
+              d: counts,
+              t: total
+            })
           }
         }
         var filePath = t.path+'/'+t.file
+
         if (options.append) {
           fs.exists(filePath, function (exists) {
             if (exists){
@@ -109,7 +126,6 @@ module.exports = function (options) {
             }
           })
         } else {
-          console.log(pxData)
           fs.writeFileSync(filePath, JSON.stringify(pxData))
         }
         cb()
@@ -126,10 +142,10 @@ module.exports = function (options) {
         minTime: minTime,
         maxTime: maxTime
       }
-      fs.writeFileSync(options.out+'/spec.json', JSON.stringify(spec));
+      fs.writeFileSync(options.out+'/spec.json', JSON.stringify(spec))
       console.log('Min Time:', minTime)
-      console.log('Max Time:', maxTime);
-      console.log(~~((maxTime-minTime)/resolutions[options.res]), 'Total '+ options.res);
+      console.log('Max Time:', maxTime)
+      console.log(~~((maxTime-minTime)/resolutions[options.res]), 'Total '+ options.res)
       cublet.emit('end')
     }
 

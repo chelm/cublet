@@ -8,8 +8,10 @@ var argv = require('optimist')
   .default('res', 'days')
   .default('append', false)
   .default('out', './')
-  .default('style', 'torque')
+  .default('format', 'torque')
   .argv
+
+console.log(argv)
 
 argv.type = 'csv'
 argv.out = __dirname + '/' + argv.out
@@ -25,16 +27,18 @@ process.stdin
   .pipe(csv.transform(function(data){
     var coords = [parseFloat(data[argv.lon]), parseFloat(data[argv.lat])],
       value = data[argv.attr],
+      //time = new Date(data[argv.time]).getTime()
       time = data[argv.time]
 
     // --------------
     // parse time hack for the storm data only
     var year = time.substr(0,4),
       month = time.substr(4,2),
-      day = time.substr(6,2);
-    var date = new Date(year, parseInt(month)-1, parseInt(day)-1).getTime()
+      day = time.substr(6,2)
+
+    time = new Date(year, parseInt(month)-1, parseInt(day)-1).getTime()
     // --------------
 
-    cublet.aggregate(coords, value, date)
+    cublet.aggregate(coords, value, time)
   }))
 
